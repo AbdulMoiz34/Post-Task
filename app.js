@@ -20,7 +20,7 @@ let emojis = ['💘', '💝', '💖', '💗', '💓', '💞', '💕', '💟', '�
 const email = getEmail();
 let login = localStorage.getItem("login");
 let user = undefined;
-if (!email && login == "false") {
+if (!email || login == "false" || !login) {
     location = "/forms/login";
 }
 function getEmail() {
@@ -52,22 +52,46 @@ function getData(key) {
     return JSON.parse(localStorage.getItem(key));
 }
 
-function postHandler() {
-    const texterea = document.querySelector(".post-textarea")
-    const description = texterea.value;
-    let bgClr = texterea.style.backgroundColor;
-    const postTime = moment(new Date()).fromNow();
-    const img = getPostImageUrl();
+async function postHandler() {
+    const textarea = document.querySelector(".post-textarea");
+    const description = textarea.value;
+    let bgClr = textarea.style.backgroundColor;
+    const file = document.getElementById("image-post-file").files[0];
+    const img = await getPostImageUrl(file); // Wait for Base64 conversion
     if (img) {
         bgClr = "";
     }
-    const post = { description, bgClr, likes: 0, img, username: user.name, time: postTime };
+
+    const post = {
+        description,
+        bgClr,
+        likes: 0,
+        img, // Storing Base64 image
+        username: user.name,
+        time: new Date()
+    };
+
     posts.push(post);
-    setData("posts", posts);
+    setData("posts", posts); // Save in localStorage
     notyf.success("Post Published.✅");
     document.querySelector(".modal-overlay").style.display = "none";
     displayPosts();
 }
+
+function getPostImageUrl(file) {
+    return new Promise((resolve, reject) => {
+        if (!file) {
+            resolve(null);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result); // Convert to Base64
+        reader.onerror = (error) => reject(error);
+    });
+}
+
 
 function showPostModal(p) {
     const modal = document.querySelector(".modal-overlay");
@@ -78,7 +102,8 @@ function showPostModal(p) {
     if (p === "show") {
         modal.style.display = "flex";
     } else {
-        const postImage = document.querySelector(".post-img");
+        const postImage = document.querySelector(".post-img-box");
+        debugger
         modal.style.display = "none";
         postImage.style.display = "none";
     }
@@ -149,9 +174,11 @@ emojiRight.addEventListener("click", function () {
     }
     showEmogis(start, end);
 });
-
 function displayPosts() {
-    for (let post of posts) {
+    const sorted = posts.sort(function (a, b) {
+        return a.time - b.time;
+    })
+    for (let post of sorted) {
         const description = post.description;
         console.log(description);
         postList.innerHTML += ` 
@@ -160,16 +187,16 @@ function displayPosts() {
                             <img src="./assets/guest-16.png" alt="" class="profile-img">
                             <div class="ms-2">
                                 <h6 class="mb-0 text-capitalize" id="post-user">${post.username}</h6>
-                                <small class="text-muted" id="post-time">${post.time}</small>
+                                <small class="text-muted" id="post-time">${moment(post.time).fromNow()}</small>
                             </div>
                         </div>
-                        <p style="background-color:${post.bgClr};" class="mt-2 ${!post.img && "post-bg"}" id="post-description">${description}</p>
+                        <p style="background-color:${post.bgClr};" class="mt-2 ${(!post.img && post.bgClr) && "post-bg"}" id="post-description">${description}</p>
                         ${post.img ? `<img src="${post.img}"
                             alt="Post Image" class="post-image">` : ""}
                         <div class="d-flex justify-content-between mt-3 post-actions">
                             <a href="#"><i class="fa fa-smile"></i>${post.likes}</a>
-                            <a href="#"><i class="fa fa-comment"></i> 214</a>
-                            <a href="#"><i class="fa fa-share"></i> 2</a>
+                            <a href="#"><i class="fa fa-comment"></i> 0</a>
+                            <a href="#"><i class="fa fa-share"></i> 0</a>
                         </div>
                     </div>`;
 
@@ -193,20 +220,6 @@ function displayPosts() {
 function expandDescription(desc) {
     console.log(desc);
 }
-function getPostImageUrl() {
-    const inp = document.getElementById("image-post-file")
-    const file = inp.files[0];
-    if (file.size > 1_024_000) {
-        notyf.error("File must be less than 1MB.");
-        return;
-    }
-    const fr = new FileReader();
-    fr.readAsDataURL(file);
-    fr.onload = function (e) {
-        console.log(e.target.result);
-        return e.target.result;
-    }
-}
 
 if (posts.length > 0) {
     displayPosts();
@@ -219,7 +232,6 @@ document.querySelector(".post-textarea").addEventListener("input", function () {
     } else {
         publishPostBtn.disabled = true;
     }
-
 });
 
 document.getElementById("image-post-file").addEventListener("input", function () {

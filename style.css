@@ -67,9 +67,9 @@ main {
     display: none;
 }
 
-.modal-overlay .post-img-box > img {
+.modal-overlay .post-img-box>img {
     width: 100%;
- height: 100%;
+    height: 100%;
 }
 
 .post-container .post-img {
@@ -498,7 +498,7 @@ main {
 
 #post-description {
     border-radius: 7px;
-    box-shadow: 0px 0px 1px #000000c1;
+    /* box-shadow: 0px 0px 1px #000000c1; */
 }
 
 .post-bg {
