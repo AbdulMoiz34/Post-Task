@@ -75,7 +75,10 @@ async function postHandler() {
     setData("posts", posts); // Save in localStorage
     notyf.success("Post Published.✅");
     document.querySelector(".modal-overlay").style.display = "none";
-    displayPosts();
+    postList.innerHTML = `<b class="text-center d-block">Loading...</b>`;
+    setTimeout(displayPosts, 1000);
+    textarea.value = "";
+    document.querySelector(".post-img-box").display = "none";
 }
 
 function getPostImageUrl(file) {
@@ -103,9 +106,10 @@ function showPostModal(p) {
         modal.style.display = "flex";
     } else {
         const postImage = document.querySelector(".post-img-box");
-        debugger
         modal.style.display = "none";
         postImage.style.display = "none";
+        textArea.value = "";
+        textArea.style.backgroundColor = "";
     }
 }
 
@@ -175,10 +179,8 @@ emojiRight.addEventListener("click", function () {
     showEmogis(start, end);
 });
 function displayPosts() {
-    const sorted = posts.sort(function (a, b) {
-        return a.time - b.time;
-    })
-    for (let post of sorted) {
+    postList.innerHTML = "";
+    for (let post of posts) {
         const description = post.description;
         console.log(description);
         postList.innerHTML += ` 
@@ -190,7 +192,7 @@ function displayPosts() {
                                 <small class="text-muted" id="post-time">${moment(post.time).fromNow()}</small>
                             </div>
                         </div>
-                        <p style="background-color:${post.bgClr};" class="mt-2 ${(!post.img && post.bgClr) && "post-bg"}" id="post-description">${description}</p>
+                        <p style="background-color:${post.bgClr};" class="mt-2 ${(!post.img && (post.bgClr !== "white")) && "post-bg"}" id="post-description">${description}</p>
                         ${post.img ? `<img src="${post.img}"
                             alt="Post Image" class="post-image">` : ""}
                         <div class="d-flex justify-content-between mt-3 post-actions">
@@ -222,7 +224,8 @@ function expandDescription(desc) {
 }
 
 if (posts.length > 0) {
-    displayPosts();
+    postList.innerHTML = `<b class="text-center d-block">Loading...</b>`;
+    setTimeout(displayPosts, 1000);
 } else {
     postList.innerHTML = `<div class="text-center text-black">There is no post yet!</div>`;
 }
