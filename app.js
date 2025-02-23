@@ -180,6 +180,10 @@ emojiRight.addEventListener("click", function () {
 });
 function displayPosts() {
     postList.innerHTML = "";
+    posts.sort(function (a, b) {
+        return b.time - a.time;
+    });
+
     for (let post of posts) {
         const description = post.description;
         console.log(description);
