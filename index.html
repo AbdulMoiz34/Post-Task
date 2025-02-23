@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,400;0,500;1,400;1,500&display=swap"
+        rel="stylesheet">
+
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+
+    <!-- BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Moment js -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
+    <!-- Notyf css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+</head>
+
+<body>
+    <main>
+        <header class="d-flex justify-content-center w-100">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+                <div class="container">
+                    <a class="navbar-brand fw-bold" href="#">Brand</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" onclick="logout()">Logout</button>
+                            </li>
+                            <li class="nav-item">
+                                <div class="nav-link" id="user-name" href="./forms/login/index.html">Hi! </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div class="modal-overlay">
+            <div class="post-modal">
+                <div class="modal-header">
+                    <h2 class="modal-title">Create post</h2>
+                    <button class="close-btn" onclick="showPostModal('hide')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <img src="/assets/guest-32.png" alt="User Avatar">
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name">John Doe</div>
+                        <div class="privacy-selector">
+                            Friends <i class="fas fa-caret-down"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <textarea class="post-textarea h-24" placeholder="What's on your mind, "></textarea>
+                </div>
+                <div class="post-img-box">
+                    <!-- <img src=""
+                        class="post-img object-fit-cover w-100 h-100" alt=""> -->
+                </div>
+                <div class="d-flex justify-content-between my-3">
+                    <div class="arrow-left" onclick="toggleBackgroundSelector()">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
+                    <div onclick="toggleEmogie()"
+                        class="flex justify-center items-center cursor-pointer hover:bg-gray-100 rounded-full w-8 h-8">
+                        <i class="fa-solid fa-face-smile "></i>
+                    </div>
+                </div>
+                <div class="background-selector hide">
+                    <div class="bg-options">
+                        <div class="bg-option bg-white selected border-1 border-dashed border-black"
+                            onclick="changePostBackground('white')"></div>
+                        <div class="bg-option bg-red" onclick="changePostBackground('red')"></div>
+                        <div class="bg-option bg-pink" onclick="changePostBackground('pink')"></div>
+                        <div class="bg-option bg-purple" onclick="changePostBackground('purple')"></div>
+                        <div class="bg-option bg-indigo" onclick="changePostBackground('indigo')"></div>
+                        <div class="bg-option bg-blue" onclick="changePostBackground('blue')"></div>
+                        <div class="bg-option bg-dark" onclick="changePostBackground('black')"></div>
+                        <div>
+                            <input type="color" value="#efefef" onchange="changePostBackground(event.target.value)"
+                                class="bg-option border-none">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="emoji-container position-relative hide">
+                        <i class="fas fa-chevron-left position-absolute top-50 start-0 cursor-pointer"
+                            id="emoji-left-btn"></i>
+                        <div class="emojis m-auto d-flex flex-wrap gap-2"></div>
+                        <i class="fas fa-chevron-right position-absolute top-50 end-0 cursor-pointer"
+                            id="emoji-right-btn"></i>
+                    </div>
+                </div>
+
+                <div class="post-options mt-2">
+                    <div class="add-to-post">
+                        <div>Add to your post</div>
+                        <div class="options-list">
+                            <div class="option-btn photo position-relative">
+                                <input type="file" name="" style="cursor: pointer;"
+                                    class="opacity-0 position-absolute w-100 start-0" id="image-post-file"
+                                    accept="image/*">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            <div class="option-btn tag">
+                                <i class="fas fa-user-tag"></i>
+                            </div>
+                            <div class="option-btn emoji">
+                                <i class="far fa-smile"></i>
+                            </div>
+                            <div class="option-btn location">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="option-btn gif">
+                                <span style="font-weight: bold; font-size: 12px;">GIF</span>
+                            </div>
+                            <div class="option-btn more">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-button-container">
+                    <button class="post-button" disabled>Post</button>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="my-container">
+                <div class="post-container bg-white mt-5" onclick="showPostModal('show')">
+                    <div class="d-flex gap-2 align-items-center">
+                        <div class="user-img">
+                            <img src="./assets/guest-32.png" alt="" class="img">
+                        </div>
+                        <div class="post-textarea">
+                            <input class="" type="text" placeholder="What's in your mind? ">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="post-buttons d-flex gap-2">
+                        <button class="video">
+                            <i class="fa-solid fa-video"></i> <span>Live video</span>
+                        </button>
+                        <button class="photo">
+                            <i class="fa-solid fa-image"></i>
+                            <span> photo/video</span>
+                        </button>
+                        <button class="mode">
+                            <i class="fa-solid fa-face-smile"></i>
+                            <span>Feeling/activity</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="posts my-5">
+                    <!-- <div class="text-center text-black">There is no post yet!</div> -->
+                </div>
+            </div>
+
+
+        </div>
+    </main>
+
+
+    <!-- BOOSTRAP JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Notyf JS -->
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
